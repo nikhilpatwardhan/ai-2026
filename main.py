@@ -18,18 +18,18 @@ input_file = r"C:\temp\invoice-2.pdf"
 output_file = r"out.xlsx"
 
 
-def extract_data(markdown: str):
+def extract_json(markdown: str) -> str:
     blocks = extract_md_blocks(markdown)
     return json.loads(blocks[0])
 
 
-def append_to_excel(data):
+def append_to_excel(json_data):
     wb = openpyxl.load_workbook(output_file)
     sheet = wb.worksheets[0]
     payload = {}
-    for key, value in data.items():
+    for key, value in json_data.items():
         if "date" in key.lower():
-            payload[1] = parser.parse(value)
+            payload[1] = parser.parse(value).date()
         elif "total" in key.lower():
             payload[2] = float(value)
     
@@ -41,8 +41,8 @@ def append_to_excel(data):
 def run():
     logger.info("Parsing PDF...")
     markdown = glm_ocr.run_ocr(Path(input_file), "Transcribe this document and extract the Date and Total amount as json")
-    data = extract_data(markdown)
-    append_to_excel(data)
+    json_data = extract_json(markdown)
+    append_to_excel(json_data)
     logger.info("Done")
 
 
