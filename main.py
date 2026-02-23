@@ -1,7 +1,11 @@
 import sys
+import json
 import logging
+import openpyxl
+from dateutil import parser
 from pathlib import Path
-from llm import glm_ocr, model_chat
+from mdextractor import extract_md_blocks
+from llm import glm_ocr
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -10,16 +14,37 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+input_file = r"C:\temp\invoice-2.pdf"
+output_file = r"out.xlsx"
+
+
+def extract_data(markdown: str):
+    blocks = extract_md_blocks(markdown)
+    return json.loads(blocks[0])
+
+
+def append_to_excel(data):
+    wb = openpyxl.load_workbook(output_file)
+    sheet = wb.worksheets[0]
+    payload = {}
+    for key, value in data.items():
+        if "date" in key.lower():
+            payload[1] = parser.parse(value)
+        elif "total" in key.lower():
+            payload[2] = float(value)
+    
+    sheet.append(payload)
+    wb.save(output_file)
+    wb.close()
+
 
 def run():
     logger.info("Parsing PDF...")
-    parsed_text = glm_ocr.run_ocr(Path(r"C:\temp\invoice-2.pdf"), "Transcribe this document as clean Markdown")
+    markdown = glm_ocr.run_ocr(Path(input_file), "Transcribe this document and extract the Date and Total amount as json")
+    data = extract_data(markdown)
+    append_to_excel(data)
+    logger.info("Done")
 
-    logger.info("Asking LLM for total")
-    prompt = "Extract only the Total amount in dollars in the following parsed invoice. \n\n" + parsed_text
-    response = model_chat.run_prompt("smollm2", prompt)
-
-    logger.info(response)
 
 if __name__ == '__main__':
     run()
