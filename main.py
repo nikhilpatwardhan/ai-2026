@@ -2,13 +2,15 @@ import sys
 import json
 import logging
 import openpyxl
+import asyncio
 from dateutil import parser
 from pathlib import Path
 from mdextractor import extract_md_blocks
 from llm import glm_ocr
+from notify.telegram import send_once
 
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.WARN, # So that httpx does not print private API token on console
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     stream=sys.stdout
 )
@@ -43,7 +45,8 @@ def run():
     markdown = glm_ocr.run_ocr(Path(input_file), "Transcribe this document and extract the Date and Total amount as json")
     json_data = extract_json(markdown)
     append_to_excel(json_data)
-    logger.info("Done")
+    asyncio.run(send_once("Done"))
+    logger.warning("Done")
 
 
 if __name__ == '__main__':

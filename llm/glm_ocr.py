@@ -14,5 +14,5 @@ def run_ocr(image_path: Path, prompt: str) -> str:
 
 
 if __name__ == "__main__":
-    response = run_ocr(Path(r"C:\temp\invoice-2.pdf"), "Transcribe this document and extract the Total amount")
+    response = run_ocr(Path(r"C:\temp\invoice-2.pdf"), "Transcribe this document and extract only the Total")
     print(response)

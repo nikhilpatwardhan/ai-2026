@@ -5,10 +5,12 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "keyring>=25.7.0",
     "mdextractor>=2025.4.231259",
     "ollama>=0.6.1",
     "ollama-ocr>=0.1.6",
     "openpyxl>=3.1.5",
     "python-dateutil>=2.9.0.post0",
+    "python-telegram-bot>=22.6",
     "ruff>=0.15.2",
 ]
