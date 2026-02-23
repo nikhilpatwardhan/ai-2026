@@ -1,5 +1,5 @@
 # Overview
-A few demo scripts on how to query a local LLM using Ollama for text as well as OCR.
+How to query a local LLM using Ollama for OCR and/or text.
 
 # Pre-requisities
 Install Ollama
@@ -11,6 +11,7 @@ Install the below models:
 
 # How to run
 ```
-uv run .\glm-ocr-demo.py
-uv run .\ollama-chat-demo.py
+uv run .\llm\glm_ocr.py
+uv run .\llm\model_chat.py
+uv run .\main.py
 ```

@@ -9,4 +9,5 @@ def run_prompt(model: str, prompt: str) -> str:
 
 
 if __name__ == "__main__":
-    run_prompt("smollm2", "Why is the sky blue?")
+    response = run_prompt("smollm2", "Why is the sky blue?")
+    print(response)
